@@ -1,20 +1,31 @@
 package com.bramfitt.busarrival;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.bramfitt.busarrival.repo.BusArrivalRepo;
 
 @SpringBootTest
+@AutoConfigureMockMvc
 class BusArrivalApplicationTests {
 	
 	@Autowired
 	BusArrivalRepo busArrivalRepo;
+	@Autowired	
+	private MockMvc mockMvc;
 	
 	@Autowired
-	private MockMvc mockMvc;
+	WebApplicationContext webApplicationContext;
 	
 	private String data = "[{\r\n"
 			+ "        \"$type\": \"Tfl.Api.Presentation.Entities.Prediction, Tfl.Api.Presentation.Entities\",\r\n"
@@ -109,8 +120,48 @@ class BusArrivalApplicationTests {
 			+ "    }\r\n"
 			+ "]";
 	
+	protected void setUp() {
+		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+	}
+	
 	@Test
-	void contextLoads() {
+	void getArrivalsWithValidUrl() throws Exception {
+		String uri = "http://localhost:8080/api/v1/arrivals";
+		MvcResult mvcResult = mockMvc
+				.perform(MockMvcRequestBuilders.get(uri)
+						.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+		
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+	}
+	
+	@Test
+	void getArrivalsWithInValidUrl() throws Exception {
+		String uri = "http://localhost:8080/api/v1/Wrong";
+		MvcResult mvcResult = mockMvc
+				.perform(MockMvcRequestBuilders.get(uri)
+						.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+		
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(404, status);   
+	}
+	
+	@Test
+	void getArrivalsWithValidUrlAndBody() throws Exception {
+		String uri = "http://localhost:8080/api/v1/arrivals";
+		MvcResult mvcResult = mockMvc
+				.perform(MockMvcRequestBuilders.get(uri).content(data)
+						.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+		
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		
+		String content = mvcResult.getResponse().getContentAsString();
+		
+		assertEquals(true, content.length() > 100);
 	}
 
 }

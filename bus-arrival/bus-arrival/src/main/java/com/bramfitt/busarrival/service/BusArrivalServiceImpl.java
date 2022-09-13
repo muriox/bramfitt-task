@@ -14,8 +14,12 @@ import com.bramfitt.busarrival.repo.BusArrivalRepo;
 @Service
 public class BusArrivalServiceImpl implements BusArrivalService {
 	
-	@Autowired
 	private BusArrivalRepo busArrivalRepo;
+	
+	public BusArrivalServiceImpl(BusArrivalRepo busArrivalRepo) {
+		
+		this.busArrivalRepo = busArrivalRepo;		
+	}
 	
 	@Override
 	public BusArrival addBusArrival(BusArrival ba) {

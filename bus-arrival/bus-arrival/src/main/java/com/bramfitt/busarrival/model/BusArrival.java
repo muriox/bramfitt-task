@@ -16,7 +16,16 @@ public class BusArrival {
 	private String expectedArrival;
 	private String timeToLive;
 	private String timeCreated;
-	
+//	
+//	/** For Testing ONLY */
+//	public BusArrival(String stationName, String destinationName, String towards, 
+//			String expectedArrival, String timeToLive, String timeCreated
+//			) {
+//		this.stationName = stationName;
+//		this.
+//		
+//		
+//	}
 	
 	public String getStationName() {
 		return stationName;

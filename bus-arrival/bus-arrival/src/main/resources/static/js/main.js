@@ -2,8 +2,8 @@
 var arrivalsId = "arrivals";
 var searchHistoryId = "searchHistory";
 
-var getArrivalsPath = "arrivals/";
-var searchesPath = "history/";
+var getArrivalsPath = "api/v1/arrivals/";
+var searchesPath = "api/v1/history/";
 var resultDiv = "arrivalResult";
 var resultTable = "arrivalResultTable"
 var searchResultDiv = "searchResult";
@@ -22,14 +22,14 @@ $(document).ready(function() {
         $("#"+id).click(function(event){
             // Start AJAX process
             $.ajax({
-                url : "arrivals", 	// the endpoint
+                url : url, 	// the endpoint
                 type : 'GET', 	        // http method
                 dataType : 'json', 	    // expected data back from the server
 
                 // handle a successful response
                 success : function(json) {
-						
-                    if (!json["ERROR"]) {
+					console.log(json);	
+                    if (json) {
                         var content = extractArrivalData(json);
                         document.getElementById(resultDiv).hidden  = false;
                         document.getElementById(resultTable).innerHTML = content;
@@ -43,9 +43,11 @@ $(document).ready(function() {
                 },
                 // handle a non-successful response
                 error : function(xhr,errmsg,err) {
-					console.log(err);
-					console.log(errmsg);
-                    alert("ERROR: " + errmsg);
+					console.log(xhr);
+					var message = JSON.parse(xhr['responseText'])['message'];
+					
+					document.getElementById(resultDiv).hidden  = false;
+                    document.getElementById(resultDiv).innerHTML = message;
                 }
             });
         });
