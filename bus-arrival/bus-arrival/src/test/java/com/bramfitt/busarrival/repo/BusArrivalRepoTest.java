@@ -62,9 +62,16 @@ public class BusArrivalRepoTest {
         ba1 = null;
     }
     
+    @Test
+    public void saveBusArrivalsRepoTest() {
+
+    	when(busArrivalRepo.save(ba1)).thenReturn(ba1);
+    
+    	assertEquals("Tolworth", busArrivalRepo.save(ba1).getTowards());
+    }
     
     @Test
-    public void searchBusArrivalsRepoRTest( ) {
+    public void searchBusArrivalsRepoTest() {
 
     	when(busArrivalRepo.findAll()).thenReturn(Stream.of(ba1, ba2).collect(Collectors.toList()));
     
@@ -73,7 +80,7 @@ public class BusArrivalRepoTest {
     }
     
     @Test
-    public void pageableSearchBusArrivalsRepoRTest( ) {
+    public void pageableSearchBusArrivalsRepoTest() {
     	Pageable paging = PageRequest.of(0, 1);
     	List<BusArrival> list = new ArrayList<BusArrival>();
     	list.add(ba2);
